@@ -41,6 +41,6 @@ data class ArtistDetailsUiState(
 )
 
 data class ArtistDetails(
-    val artist: Artist = Artist(0, "ffffffffffffffffffffff", "", 0, ""),
+    val artist: Artist = Artist(0, "ffffffffffffffffffffff", 7, "", ""),
     val songs: List<Song> = listOf()
 )

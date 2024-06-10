@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 data class Artist(
     @PrimaryKey(autoGenerate = true) val artist_id: Int = 0,
     val artist_name: String,
-    val artist_gender: String,
     val artist_age: Int,
     val artist_image: String,
+    val artist_infor: String,
 )
