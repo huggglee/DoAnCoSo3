@@ -22,7 +22,7 @@ interface SongDao {
     fun delete(song: Song)
 
     @Query("SELECT * FROM Song WHERE song_id = :id")
-    fun getSongById(id: Int): Song
+    fun getSongById(id: Int): Flow<Song>
 
     @Query("SELECT * FROM Song")
     fun getAllSongs(): List<Song>
@@ -37,4 +37,5 @@ interface SongDao {
     """
     )
     fun getSongWithArtists(): Flow<List<SongWithArtists>>
+
 }

@@ -8,6 +8,7 @@ import com.example.dacs3.dao.UserDao
 import com.example.dacs3.data.User
 import com.example.dacs3.repository.MusicRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,6 +18,10 @@ import kotlinx.coroutines.withContext
 class UserViewModel(
     var userDao: MusicRepository
 ) : ViewModel() {
+
+    private val _userId = MutableStateFlow<Int?>(null)
+    val userId: StateFlow<Int?> = _userId.asStateFlow()
+
     private val _fullname = MutableStateFlow("")
     val fullname: StateFlow<String> = _fullname.asStateFlow()
 
@@ -32,6 +37,13 @@ class UserViewModel(
     private val _msg = MutableStateFlow("")
     val msg: StateFlow<String> = _msg.asStateFlow()
 
+
+    fun setString() {
+        _fullname.value = ""
+        _username.value = ""
+        _password.value = ""
+        _confirmPassword.value = ""
+    }
 
     fun onFullNameChange(newFullName: String) {
         _fullname.value = newFullName
@@ -51,18 +63,25 @@ class UserViewModel(
 
     val userList = MutableStateFlow<List<User>>(listOf())
 
-    fun login(context: Context) {
-        viewModelScope.launch(Dispatchers.IO) {
+    suspend fun login(context: Context, onLoginSuccess: (Int) -> Unit): Boolean {
+        return viewModelScope.async(Dispatchers.IO) {
             val user = userDao.getUser(_username.value, _password.value)
-            if (user != null) {
-                _msg.value = "Login Success"
+            val result = if (user != null) {
+                _msg.value = "Đăng nhập thành công"
+                _userId.value = user.user_id
+                withContext(Dispatchers.Main) {
+                    onLoginSuccess(_userId.value!!)
+                }
+                true
             } else {
-                _msg.value = "Login Failed"
+                _msg.value = "Đăng nhập thất bại"
+                false
             }
             withContext(Dispatchers.Main) {
                 showToast(context, _msg.value)
             }
-        }
+            result
+        }.await()
     }
 
     fun insertUser(context: Context) {

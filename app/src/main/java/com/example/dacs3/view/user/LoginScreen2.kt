@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -42,6 +43,7 @@ import com.example.dacs3.ui.theme.DACS3Theme
 import com.example.dacs3.view.navigation.NavDestination
 import com.example.dacs3.viewModel.AppViewModelProvider
 import com.example.dacs3.viewModel.UserViewModel
+import kotlinx.coroutines.launch
 
 object LoginScreen2 : NavDestination {
     override val route: String = "Login_screen2"
@@ -50,6 +52,7 @@ object LoginScreen2 : NavDestination {
 @Composable
 fun LoginScreen2(
     viewModel: UserViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    homeScreen: (Int) -> Unit,
     modifier: Modifier = Modifier,
 
     ) {
@@ -57,6 +60,9 @@ fun LoginScreen2(
     var userName = viewModel.username.collectAsState()
     var passWord = viewModel.password.collectAsState()
     var context= LocalContext.current
+    var user_id=viewModel.userId.collectAsState()
+
+    val coroutineScope = rememberCoroutineScope()
 
     var isChecked by rememberSaveable {
         mutableStateOf(false)
@@ -102,7 +108,14 @@ fun LoginScreen2(
             )
         }
         Button(onClick = {
-            viewModel.login(context)
+            coroutineScope.launch {
+                viewModel.login(
+                    context = context,
+                    onLoginSuccess = {
+                        homeScreen(it)
+                    }
+                )
+            }
         }) {
             Text(
                 text = "Đăng nhập",
@@ -172,10 +185,10 @@ fun LoginScreen2(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun LoginTest2() {
-    DACS3Theme {
-        LoginScreen2()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//private fun LoginTest2() {
+//    DACS3Theme {
+//        LoginScreen2()
+//    }
+//}

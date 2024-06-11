@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Timelapse
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -52,358 +53,392 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.dacs3.R
+import com.example.dacs3.data.User
 import com.example.dacs3.ui.theme.Black1
 import com.example.dacs3.ui.theme.Gray1
 import com.example.dacs3.ui.theme.Gray2
 import com.example.dacs3.ui.theme.Green1
 import com.example.dacs3.view.seekBar.CircleSeekBar
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun ScaffoldHome(
+//    goToHomeScreen: () -> Unit,
+//    goToSearchScreen: () -> Unit,
+//    goToAccountScreen: () -> Unit,
+//    goToPlaylistScreen: () -> Unit
+//) {
+//
+//    var isFavourite by rememberSaveable {
+//        mutableStateOf(false)
+//    }
+//
+//    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+//    val scope = rememberCoroutineScope()
+//
+//    ModalNavigationDrawer(
+//        drawerState = drawerState,
+//        drawerContent = {
+//            ModalDrawerSheet(
+//                modifier = Modifier.width(300.dp),
+//                drawerContainerColor = Color.Black,
+//                drawerContentColor = Color.White
+//            ) {
+//                Row(
+//                    modifier = Modifier
+//                        .padding(12.dp)
+//                        .fillMaxWidth()
+//                        .clickable { goToAccountScreen() },
+//                    verticalAlignment = Alignment.CenterVertically,
+//                ) {
+//                    Image(
+//                        painter = painterResource(id = R.drawable.chungtacuatuonglai_mtp),
+//                        contentDescription = null,
+//                        modifier = Modifier
+//                            .size(50.dp)
+//                            .clip(shape = RoundedCornerShape(100))
+//                    )
+//                    Spacer(modifier = Modifier.width(12.dp))
+//                    Column {
+////                        User name
+//                        Text(
+//                            text = "Khang Phan",
+//                            modifier = Modifier,
+//                            fontWeight = FontWeight.Bold,
+//                            fontSize = 18.sp
+//                        )
+//                        Text(
+//                            text = "Xem hồ sơ",
+//                            modifier = Modifier,
+//                            fontSize = 12.sp,
+//                            color = Gray1
+//                        )
+//                    }
+//                }
+//                Divider()
+//                Spacer(modifier = Modifier.height(18.dp))
+//                Row(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .clickable { /*TODO()*/ }
+//                        .padding(horizontal = 12.dp),
+//                    verticalAlignment = Alignment.CenterVertically,
+//                ) {
+//                    Icon(
+//                        imageVector = Icons.Filled.LibraryBooks,
+//                        contentDescription = null,
+//                        modifier = Modifier.size(28.dp)
+//                    )
+//                    Spacer(modifier = Modifier.width(12.dp))
+//                    Text(
+//                        text = "Playlist của bạn", modifier = Modifier,
+//                        fontSize = 18.sp
+//                    )
+//                }
+//
+//                Spacer(modifier = Modifier.height(24.dp))
+//                Row(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .clickable { /*TODO()*/ }
+//                        .padding(horizontal = 12.dp),
+//                    verticalAlignment = Alignment.CenterVertically,
+//                ) {
+//                    Icon(
+//                        imageVector = Icons.Filled.Timelapse,
+//                        contentDescription = null,
+//                        modifier = Modifier.size(28.dp)
+//                    )
+//                    Spacer(modifier = Modifier.width(12.dp))
+//                    Text(
+//                        text = "Nội dung gần đây", modifier = Modifier,
+//                        fontSize = 18.sp
+//                    )
+//                }
+//
+//                Spacer(modifier = Modifier.height(24.dp))
+//                Row(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .clickable { /*TODO()*/ }
+//                        .padding(horizontal = 12.dp),
+//                    verticalAlignment = Alignment.CenterVertically,
+//                ) {
+//                    Icon(
+//                        imageVector = Icons.Filled.Logout,
+//                        contentDescription = null,
+//                        modifier = Modifier.size(28.dp)
+//                    )
+//                    Spacer(modifier = Modifier.width(12.dp))
+//                    Text(
+//                        text = "Đăng xuất", modifier = Modifier,
+//                        fontSize = 18.sp
+//                    )
+//                }
+//            }
+//        },
+//    ) {
+//        Scaffold(
+//            topBar = {
+//                TopAppBar(
+//                    colors = TopAppBarDefaults.topAppBarColors(
+//                        containerColor = Color.Black,
+//                        titleContentColor = Color.White,
+//                    ),
+//                    title = {
+//                        ContentTopAppBar(
+//                            scope,
+//                            drawerState,
+//                            user,
+//                        )
+//                    }
+//                )
+//            },
+//            bottomBar = {
+//                BottomAppBar(
+//                    onClickFavourite = { isFavourite = !isFavourite },
+//                    isFavourite = isFavourite,
+//                    goToHomeScreen = { /*TODO*/ },
+//                    goToSearchScreen = { /*TODO*/ },
+//                    goToAccountScreen = { /*TODO*/ },
+//                    goToPlaylistScreen = { }
+//                )
+//            }
+//        ) { innerPadding ->
+//            Column(
+//                modifier = Modifier
+//                    .padding(innerPadding),
+//                verticalArrangement = Arrangement.spacedBy(16.dp),
+//            ) {
+//            }
+//        }
+//    }
+//
+//
+//}
+
+
 @Composable
-fun ScaffoldHome(
-    scaffoldContent: @Composable () -> Unit
+fun ContentTopAppBar(
+    scope: CoroutineScope,
+    drawerState: DrawerState,
+    user: User
 ) {
-    var isFavourite by rememberSaveable {
-        mutableStateOf(false)
-    }
-    var scope = rememberCoroutineScope()
-    var drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            ModalDrawerSheet(
-                modifier = Modifier.width(300.dp),
-                drawerContainerColor = Color.Black,
-                drawerContentColor = Color.White
-            ) {
-                Row(
-                    modifier = Modifier
-                        .padding(12.dp)
-                        .fillMaxWidth()
-                        .clickable { /*TODO()*/ },
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.chungtacuatuonglai_mtp),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(50.dp)
-                            .clip(shape = RoundedCornerShape(100))
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Column {
-//                        User name
-                        Text(
-                            text = "Khang Phan",
-                            modifier = Modifier,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp
-                        )
-                        Text(
-                            text = "Xem hồ sơ",
-                            modifier = Modifier,
-                            fontSize = 12.sp,
-                            color = Gray1
-                        )
-                    }
-                }
-                Divider()
-                Spacer(modifier = Modifier.height(18.dp))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { /*TODO()*/ }
-                        .padding(horizontal = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.LibraryBooks,
-                        contentDescription = null,
-                        modifier = Modifier.size(28.dp)
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Text(
-                        text = "Playlist của bạn", modifier = Modifier,
-                        fontSize = 18.sp
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(24.dp))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { /*TODO()*/ }
-                        .padding(horizontal = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Timelapse,
-                        contentDescription = null,
-                        modifier = Modifier.size(28.dp)
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Text(
-                        text = "Nội dung gần đây", modifier = Modifier,
-                        fontSize = 18.sp
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(24.dp))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { /*TODO()*/ }
-                        .padding(horizontal = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Logout,
-                        contentDescription = null,
-                        modifier = Modifier.size(28.dp)
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Text(
-                        text = "Đăng xuất", modifier = Modifier,
-                        fontSize = 18.sp
-                    )
-                }
-            }
-        }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(end = 10.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color.Black,
-                        titleContentColor = Color.White
-                    ),
-                    title = {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(end = 10.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
 //                        Welcome user
-                            Column(
-                                modifier = Modifier.wrapContentSize(),
-                            ) {
-                                Text(
-                                    text = "Hello Khang!",
-                                    fontSize = 14.sp,
-                                )
-                                Text(
-                                    text = "Let's listen to something cool today",
-                                    fontSize = 12.sp,
-                                    color = Gray1
-                                )
-                            }
-                            Spacer(modifier = Modifier.weight(1f))
+        Column(
+            modifier = Modifier.wrapContentSize(),
+        ) {
+            Text(
+                text = "Hello ${user.fullName}!",
+                fontSize = 14.sp,
+            )
+            Text(
+                text = "Let's listen to something cool today",
+                fontSize = 12.sp,
+                color = Gray1
+            )
+        }
+        Spacer(modifier = Modifier.weight(1f))
 //                        Image User
-                            Box(modifier = Modifier) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.chungtacuatuonglai_mtp),
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .width(34.dp)
-                                        .height(34.dp)
-                                        .clip(shape = RoundedCornerShape(100))
-                                        .clickable {
-                                            scope.launch {
-                                                drawerState.apply {
-                                                    if (isClosed) open() else close()
-                                                }
-                                            }
-                                        }
-                                )
+        Box(modifier = Modifier) {
+            Image(
+                painter = painterResource(id = R.drawable.chungtacuatuonglai_mtp),
+                contentDescription = null,
+                modifier = Modifier
+                    .width(34.dp)
+                    .height(34.dp)
+                    .clip(shape = RoundedCornerShape(100))
+                    .clickable {
+                        scope.launch {
+                            drawerState.apply {
+                                if (isClosed) open() else close()
                             }
                         }
                     }
-                )
-            },
-            bottomBar = {
-                Column(
-                    modifier = Modifier
-                        .wrapContentSize()
-                        .height(120.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun BottomAppBar(
+    onClickFavourite: () -> Unit,
+    isFavourite: Boolean,
+    goToHomeScreen: () -> Unit,
+    goToSearchScreen: () -> Unit,
+    goToAccountScreen: () -> Unit,
+    goToPlaylistScreen: () -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .wrapContentSize()
+//            .height(120.dp)
+    ) {
+//        BottomAppBar(
+//            containerColor = Black1,
+//            contentColor = Color.White,
+//            modifier = Modifier.weight(1f)
+//        ) {
+//            Row(
+//                modifier = Modifier
+//                    .weight(1f)
+//                    .fillMaxWidth()
+//                    .padding(horizontal = 10.dp),
+//                verticalAlignment = Alignment.CenterVertically
+//            ) {
+//                Row(
+//                    verticalAlignment = Alignment.CenterVertically,
+//                    modifier = Modifier.weight(1f),
+//
+//                    ) {
+//                    Box(
+//                        modifier = Modifier
+//                            .size(40.dp)
+//                            .clip(shape = RoundedCornerShape(10.dp))
+//                    ) {
+//                        Image(
+//                            painter = painterResource(id = R.drawable.chungtacuatuonglai_mtp),
+//                            contentDescription = null
+//                        )
+//                    }
+//                    Spacer(modifier = Modifier.width(10.dp))
+//                    Column(
+//
+//                    ) {
+//                        Text(text = "Chúng ta của hiện tại", fontSize = 10.sp)
+//                        Spacer(modifier = Modifier.height(5.dp))
+//                        Text(
+//                            text = "Sơn Tùng MTP",
+//                            fontSize = 10.sp,
+//                            color = Gray1
+//                        )
+//                    }
+//                }
+//
+//                Row(
+//                    modifier = Modifier.weight(1f),
+//                    horizontalArrangement = Arrangement.End,
+//                    verticalAlignment = Alignment.CenterVertically
+//                ) {
+//
+//                    IconButton(
+//                        onClick = {
+//                            onClickFavourite()
+//                        },
+//                    ) {
+//                        Icon(
+//                            imageVector = if (isFavourite) Icons.Filled.Favorite
+//                            else Icons.Filled.FavoriteBorder,
+//                            contentDescription = null,
+//                            tint = if (isFavourite) Green1
+//                            else Gray1,
+//                        )
+//                    }
+//
+//                    CircleSeekBar(30f)
+//                }
+//            }
+//        }
+        BottomAppBar(
+            containerColor = Gray2,
+            contentColor = Color.White,
+//            modifier = Modifier.weight(1f)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                IconButton(
+                    onClick = { goToHomeScreen() },
+                    modifier = Modifier.size(80.dp),
                 ) {
-                    BottomAppBar(
-                        containerColor = Black1,
-                        contentColor = Color.White,
-                        modifier = Modifier.weight(1f)
+                    Column(
+                        modifier = Modifier,
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Row(
-                            modifier = Modifier
-                                .weight(1f)
-                                .fillMaxWidth()
-                                .padding(horizontal = 10.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.weight(1f),
+                        Icon(
+                            imageVector = Icons.Filled.Home,
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp)
+                        )
 
-                                ) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(40.dp)
-                                        .clip(shape = RoundedCornerShape(10.dp))
-                                ) {
-                                    Image(
-                                        painter = painterResource(id = R.drawable.chungtacuatuonglai_mtp),
-                                        contentDescription = null
-                                    )
-                                }
-                                Spacer(modifier = Modifier.width(10.dp))
-                                Column(
-
-                                ) {
-                                    Text(text = "Chúng ta của hiện tại", fontSize = 10.sp)
-                                    Spacer(modifier = Modifier.height(5.dp))
-                                    Text(
-                                        text = "Sơn Tùng MTP",
-                                        fontSize = 10.sp,
-                                        color = Gray1
-                                    )
-                                }
-                            }
-
-                            Row(
-                                modifier = Modifier.weight(1f),
-                                horizontalArrangement = Arrangement.End,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-
-                                IconButton(
-                                    onClick = {},
-                                ) {
-                                    Icon(
-                                        imageVector = if (isFavourite) Icons.Filled.Favorite
-                                        else Icons.Filled.FavoriteBorder,
-                                        contentDescription = null,
-                                        tint = if (isFavourite) Green1
-                                        else Gray1,
-                                    )
-                                }
-
-                                CircleSeekBar(duration = 10f)
-
-                            }
-                        }
-                    }
-                    BottomAppBar(
-                        containerColor = Gray2,
-                        contentColor = Color.White,
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceAround
-                        ) {
-                            IconButton(
-                                onClick = {
-
-                                },
-                                modifier = Modifier.size(80.dp),
-                            ) {
-                                Column(
-                                    modifier = Modifier,
-                                    verticalArrangement = Arrangement.Center,
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Filled.Home,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(24.dp)
-                                    )
-
-                                    Text(text = "Trang chủ", fontSize = 10.sp)
-                                }
-                            }
-
-                            IconButton(
-                                onClick = {
-
-                                },
-                                modifier = Modifier.size(80.dp),
-                            ) {
-                                Column(
-                                    modifier = Modifier,
-                                    verticalArrangement = Arrangement.Center,
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Filled.Search,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(24.dp)
-                                    )
-
-                                    Text(text = "Tìm kiếm", fontSize = 10.sp)
-                                }
-                            }
-
-                            IconButton(
-                                onClick = {
-
-                                },
-                                modifier = Modifier.size(80.dp),
-
-                                ) {
-                                Column(
-                                    verticalArrangement = Arrangement.Center,
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Filled.LibraryBooks,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(24.dp)
-                                    )
-
-                                    Text(text = "Playlist", fontSize = 10.sp)
-                                }
-                            }
-
-                            IconButton(
-                                onClick = {
-
-                                },
-                                modifier = Modifier.size(80.dp),
-                            ) {
-                                Column(
-                                    verticalArrangement = Arrangement.Center,
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Filled.AccountCircle,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(24.dp)
-                                    )
-                                    Text(text = "Tài khoản", fontSize = 10.sp)
-                                }
-                            }
-                        }
+                        Text(text = "Trang chủ", fontSize = 10.sp)
                     }
                 }
-            }
-        ) { innerPadding ->
-            Column(
-                modifier = Modifier
-                    .padding(innerPadding),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
 
-                scaffoldContent()
+                IconButton(
+                    onClick = { goToSearchScreen() },
+                    modifier = Modifier.size(80.dp),
+                ) {
+                    Column(
+                        modifier = Modifier,
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Search,
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp)
+                        )
+
+                        Text(text = "Tìm kiếm", fontSize = 10.sp)
+                    }
+                }
+
+                IconButton(
+                    onClick = { goToPlaylistScreen() },
+                    modifier = Modifier.size(80.dp),
+
+                    ) {
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.LibraryBooks,
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp)
+                        )
+
+                        Text(text = "Playlist", fontSize = 10.sp)
+                    }
+                }
+
+                IconButton(
+                    onClick = { goToAccountScreen() },
+                    modifier = Modifier.size(80.dp),
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.AccountCircle,
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Text(text = "Tài khoản", fontSize = 10.sp)
+                    }
+                }
             }
         }
     }
 }
 
 
-@Preview
-@Composable
-private fun test() {
-    ScaffoldHome({})
-}
+//@Preview
+//@Composable
+//private fun test() {
+//    ScaffoldHome({})
+//}

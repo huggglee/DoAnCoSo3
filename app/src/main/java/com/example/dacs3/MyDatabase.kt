@@ -49,7 +49,7 @@ abstract class MyDatabase :RoomDatabase(){
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     MyDatabase::class.java,
-                    "demo5"
+                    "demo"
                 ).build()
                 INSTANCE = instance
                 instance

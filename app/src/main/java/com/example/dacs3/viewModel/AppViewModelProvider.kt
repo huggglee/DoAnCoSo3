@@ -18,6 +18,7 @@ object AppViewModelProvider {
 
         initializer {
             HomeViewModel(
+                this.createSavedStateHandle(),
                 myApp().container.musicRepository
             )
         }
@@ -28,6 +29,14 @@ object AppViewModelProvider {
                 musicRepository = myApp().container.musicRepository
             )
         }
+
+        initializer {
+            SongDetailsViewModel(
+                savedStateHandle = this.createSavedStateHandle(),
+                songsRepository = myApp().container.musicRepository
+            )
+        }
+
     }
 }
 

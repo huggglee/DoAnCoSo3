@@ -40,7 +40,7 @@ import com.example.dacs3.relation.SongWithArtists
 fun SongList(
     songList: List<SongWithArtists>,
     modifier: Modifier = Modifier,
-    goToSongDetails: () -> Unit,
+    goToSongDetails: (Int) -> Unit,
 ) {
     var isSongSelected by remember { mutableStateOf(false) }
 
@@ -52,7 +52,7 @@ fun SongList(
             SongItem(
                 song = song.song,
                 artists = song.artists,
-                goToDetailSong = { goToSongDetails() },
+                goToDetailSong = { goToSongDetails(song.song.song_id) },
             )
         }
     }
@@ -106,8 +106,6 @@ fun SongItem(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
-
-
     }
 }
 

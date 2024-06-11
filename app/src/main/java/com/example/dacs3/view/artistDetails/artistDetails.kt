@@ -44,7 +44,6 @@ import com.example.dacs3.data.Artist
 import com.example.dacs3.data.Song
 import com.example.dacs3.view.home.stringBuilder
 import com.example.dacs3.view.navigation.NavDestination
-import com.example.dacs3.view.scaffold.ScaffoldHome
 import com.example.dacs3.viewModel.AppViewModelProvider
 import com.example.dacs3.viewModel.ArtistDetailsViewModel
 
@@ -60,25 +59,25 @@ fun ArtistScreen(
 ) {
     val artistUiState by artistViewModel.uiState.collectAsState()
 
-    ScaffoldHome {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black)
-        ) {
-            item {
-                imgSinger(artist = artistUiState.artistDetails.artist)
-            }
-
-            items(artistUiState.artistDetails.songs) { song ->
-                SongItems(song = song, artist = artistUiState.artistDetails.artist)
-            }
-
-            item {
-                singerInfor(artist = artistUiState.artistDetails.artist)
-            }
-        }
-    }
+//    ScaffoldHome {
+//        LazyColumn(
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .background(Color.Black)
+//        ) {
+//            item {
+//                imgSinger(artist = artistUiState.artistDetails.artist)
+//            }
+//
+//            items(artistUiState.artistDetails.songs) { song ->
+//                SongItems(song = song, artist = artistUiState.artistDetails.artist)
+//            }
+//
+//            item {
+//                singerInfor(artist = artistUiState.artistDetails.artist)
+//            }
+//        }
+//    }
 }
 
 @Composable
@@ -186,7 +185,7 @@ fun singerInfor(
             fontSize = 16.sp
         )
         Text(
-            text = stringResource(R.string.singerInfor),
+            text = artist.artist_infor,
             maxLines = maxLine,
             overflow = TextOverflow.Ellipsis,
             color = Color.White,
@@ -214,10 +213,6 @@ fun singerInfor(
             Spacer(modifier = Modifier.width(40.dp))
             Text(text = "Việt Nam", color = Color.White)
         }
-        Row {
-            Text(text = "Thể loại", color = Color.Gray)
-            Spacer(modifier = Modifier.width(40.dp))
-            Text(text = "Bollero, trữ tình", color = Color.White)
-        }
+
     }
 }

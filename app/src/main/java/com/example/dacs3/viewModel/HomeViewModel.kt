@@ -5,18 +5,36 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dacs3.data.Artist
 import com.example.dacs3.data.Playlist
-import com.example.dacs3.relation.ArtistWithSongs
-import com.example.dacs3.relation.PlaylistWithSongs
+import com.example.dacs3.data.User
 import com.example.dacs3.relation.SongWithArtists
 import com.example.dacs3.repository.MusicRepository
+import com.example.dacs3.view.home.HomeScreen
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 class HomeViewModel(
+    private val savedStateHandle: SavedStateHandle,
     private val musicRepository: MusicRepository
-):ViewModel(){
+) : ViewModel() {
+
+    private val userID: Int = checkNotNull(savedStateHandle[HomeScreen.user_id])
+
+    val userUiState: StateFlow<UserUiState> =
+        musicRepository.getUserById(userID)
+            .filterNotNull()
+            .map {
+                UserUiState(
+                    user = it
+                )
+            }.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000L),
+                initialValue = UserUiState()
+            )
+
     val singerUiState: StateFlow<ArtistUiState> =
         musicRepository.getAllArtists().map { ArtistUiState(it) }
             .stateIn(
@@ -41,6 +59,10 @@ class HomeViewModel(
                 initialValue = PlaylistUIState()
             )
 }
+
+data class UserUiState(
+    val user: User = User(0, "", "", "")
+)
 
 data class ArtistUiState(val artistList: List<Artist> = listOf())
 data class ArtistSongsUiState(val songList: List<SongWithArtists> = listOf())

@@ -108,7 +108,7 @@ class MainActivity : ComponentActivity() {
                     0,
                     "Cao ốc 20",
                     "https://unwearable-beans.000webhostapp.com/Image/Song/Bray/CaoOc20.jpg",
-                    "",
+                    "https://unwearable-beans.000webhostapp.com/song/CaoOc20.mp3",
                     1,
                     0
                 ),
@@ -357,6 +357,7 @@ class MainActivity : ComponentActivity() {
                 songs.forEach { songDao.insert(it) }
                 artists.forEach { artistDao.insert(it) }
                 album.forEach { albumDao.insert(it) }
+                artistSongCrossRef.forEach { artistDao.insertArtistSongCrossRef(it) }
 //                playLists.forEach { playListDao.insert(it) }
 //                songPlayCrossRef.forEach { crossRef.insertSongPlaylistCrossRef(it) }
 //                artistSongCrossRef.forEach { artistDao.insertArtistSongCrossRef(it) }

@@ -112,7 +112,7 @@ class MusicRepository(
         songDao.delete(song)
     }
 
-    override fun getSongById(id: Int): Song {
+    override fun getSongById(id: Int): Flow<Song> {
         return songDao.getSongById(id)
     }
 
@@ -141,7 +141,7 @@ class MusicRepository(
         userDao.delete(user)
     }
 
-    override fun getUserById(id: Int): User {
+    override fun getUserById(id: Int): Flow<User> {
         return userDao.getUserById(id)
     }
 
